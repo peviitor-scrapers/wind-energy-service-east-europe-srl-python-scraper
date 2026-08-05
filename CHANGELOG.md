@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.0.1] - 2026-08-05
+
+### Fixed
+- Scraper no longer fails when the company has no open jobs: `upsert_jobs` skips the API upload for an empty payload instead of hitting a 400 error (`Payload must be a non-empty JSON array of jobs`).
+
 ## [1.0.0] - 2026-08-03
 
 ### Added

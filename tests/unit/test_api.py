@@ -29,6 +29,11 @@ def test_query_solr_missing_data_returns_empty(mock_get):
     assert result["docs"] == []
 
 
+def test_upsert_jobs_skips_empty_payload(mock_post):
+    api.upsert_jobs([])
+    mock_post.assert_not_called()
+
+
 def test_upsert_jobs_keeps_cif(mock_post):
     mock_post.return_value.status_code = 200
     mock_post.return_value.json.return_value = {"success": True, "count": 1}

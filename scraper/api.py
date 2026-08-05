@@ -135,6 +135,9 @@ def delete_job_by_url(url):
 
 def upsert_jobs(jobs):
     """Upserts (adds or updates) jobs via the peviitor API."""
+    if not jobs:
+        print("No jobs to upsert — skipping upload.")
+        return
     url = f"{API_BASE_URL}/scraper/jobs/upload/"
     res = requests.post(
         url,

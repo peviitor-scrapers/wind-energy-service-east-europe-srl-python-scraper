@@ -1,7 +1,7 @@
 """
-Electrogrup applytojob Scraper — Python port of the EPAM Node.js template.
+WIND ENERGY SERVICE EAST EUROPE SRL applytojob Scraper — derived from the ELECTROGRUP Python template.
 
-Scrapes job listings from the Electrogrup applytojob board filtered by
+Scrapes WESEE job listings from the group applytojob board (electrogrup.applytojob.com) filtered by
 department, validates the company via ANAF, and publishes jobs/company data
 to peviitor.ro through the v1 API (api.peviitor.ro/v1) — no direct Solr access.
 """
@@ -31,6 +31,12 @@ API_PATH = scraper_config["apiPath"]
 DEPARTMENT = scraper_config["department"]
 
 COMPANY_NAME = None
+
+# Jobs stored in SOLR under this CIF may be published by other peviitor
+# scrapers (aggregators). Stale deletion must only ever touch jobs that this
+# scraper itself published (i.e. URLs on the group's applytojob board), so we
+# scope it to this prefix instead of the whole CIF.
+JOB_DETAILS_PREFIX = f"{API_BASE}/apply/jobs/details/"
 
 
 def build_listing_url():
@@ -125,7 +131,7 @@ def map_to_job_model(raw_job, cif, company_name=None):
 
 
 _ROMANIAN_CITIES = [
-    "Bucharest", "București", "Cluj-Napoca", "Cluj Napoca",
+    "Bucharest", "București", "Bucuresti", "Cluj-Napoca", "Cluj Napoca",
     "Timișoara", "Timisoara", "Iași", "Iasi", "Brașov", "Brasov",
     "Constanța", "Constanta", "Craiova", "Bacău", "Sibiu",
     "Târgu Mureș", "Targu Mures", "Oradea", "Baia Mare", "Satu Mare",
@@ -133,12 +139,25 @@ _ROMANIAN_CITIES = [
     "Brăila", "Braila", "Drobeta-Turnu Severin", "Râmnicu Vâlcea", "Ramnicu Valcea",
     "Buzău", "Buzau", "Botoșani", "Botosani", "Zalău", "Zalau", "Hunedoara", "Deva",
     "Suceava", "Bistrița", "Bistrita", "Tulcea", "Călărași", "Calarasi",
-    "Giurgiu", "Alba Iulia", "Slatina", "Piatra Neamț", "Piatra Neamt", "Roman",
+    "Giurgiu", "Alba Iulia", "Slatina", "Piatra Neamț", "Piatra Neamt",
+    "Piatra-Neamt", "Roman", "Turda", "Câmpia Turzii", "Campia Turzii",
+    "Medgidia", "Gura Ialomiței", "Gura Ialomitei",
     "Dumbrăvița", "Dumbravita", "Voluntari", "Popești-Leordeni", "Popesti-Leordeni",
     "Chitila", "Mogoșoaia", "Mogosoaia", "Otopeni",
 ]
 
-_CITY_SET = {c.lower() for c in _ROMANIAN_CITIES}
+_DIACRITIC_MAP = str.maketrans("ăâîșțĂÂÎȘȚ", "aaistAAIST")
+
+
+def _normalize_city(city):
+    """Normalizes a city name: lowercase, no diacritics, no hyphen/double spaces."""
+    if not city:
+        return ""
+    normalized = city.lower().translate(_DIACRITIC_MAP)
+    return " ".join(normalized.replace("-", " ").split())
+
+
+_CITY_SET = {_normalize_city(c) for c in _ROMANIAN_CITIES}
 
 
 def _normalize_workmode(workmode):
@@ -158,10 +177,13 @@ def transform_jobs_for_solr(payload):
 
     transformed_jobs = []
     for job in payload.get("jobs", []):
-        locations = [loc for loc in job.get("location") or []
-                     if loc.lower().strip() in ("romania", "românia")
-                     or loc.lower().strip() in _CITY_SET]
-        locations = ["România" if loc.lower() == "romania" else loc for loc in locations]
+        locations = []
+        for loc in job.get("location") or []:
+            normalized = _normalize_city(loc)
+            if normalized in ("romania", "românia"):
+                locations.append("România")
+            elif normalized in _CITY_SET:
+                locations.append(loc)
         new_job = {
             **job,
             "location": locations if locations else ["România"],
@@ -187,8 +209,9 @@ def main(root=None):
     print("=== Step 1: Get existing jobs from SOLR ===")
     existing_result = query_solr(COMPANY_CIF)
     existing_count = existing_result["numFound"]
-    existing_urls = {doc.get("url") for doc in existing_result["docs"] if doc.get("url")}
-    print(f"Found {existing_count} existing jobs in SOLR")
+    existing_urls = {doc.get("url") for doc in existing_result["docs"]
+                     if doc.get("url") and doc["url"].startswith(JOB_DETAILS_PREFIX)}
+    print(f"Found {existing_count} existing jobs in SOLR ({len(existing_urls)} from this board)")
 
     print("=== Step 2: Validate company via ANAF ===")
     validated = validate_and_get_company()
@@ -220,7 +243,7 @@ def main(root=None):
 
     raw_jobs = scrape_all_listings()
     scraped_count = len(raw_jobs)
-    print(f"Jobs scraped from Electrogrup applytojob board: {scraped_count}")
+    print(f"Jobs scraped from the WESEE applytojob board: {scraped_count}")
 
     if not test_only_one_page:
         anofm_jobs = search_anofm(validated["cif"])
@@ -300,7 +323,7 @@ def main(root=None):
     final_result = query_solr(COMPANY_CIF)
     print(f"\n=== SUMMARY ===")
     print(f"Jobs existing in SOLR before scrape: {existing_count}")
-    print(f"Jobs scraped from Electrogrup applytojob board: {scraped_count}")
+    print(f"Jobs scraped from the WESEE applytojob board: {scraped_count}")
     print(f"Stale jobs attempted: {len(stale_urls)}")
     print(f"Jobs in SOLR after scrape: {final_result['numFound']}")
     print(f"====================")

@@ -10,8 +10,10 @@ import pytest
 
 from scraper import anaf
 from scraper.api import API_BASE_URL
+from scraper.config import company_config
 
-COMPANY_CIF = "9256208"
+COMPANY_CIF = company_config["id"]
+COMPANY_NAME = company_config["company"]
 
 
 def _reachable(host, port=443, timeout=3):
@@ -28,19 +30,18 @@ def peviitor_api_reachable():
     return _reachable(host)
 
 
-def test_anaf_returns_electrogrup():
+def test_anaf_returns_company():
     if not _reachable("cuiscan.ro"):
         pytest.skip("cuiscan.ro not reachable")
     company = anaf.get_company_from_anaf(COMPANY_CIF)
     if company is None:
         pytest.skip("ANAF APIs unavailable")
-    assert company["denumire"] == "ELECTROGRUP SA"
+    assert company["denumire"] == COMPANY_NAME
     assert company["cif"] == COMPANY_CIF
     assert company["stareInregistrare"] == "INREGISTRAT"
-    assert "CLUJ" in company["adresa"].upper()
 
 
-def test_search_anofm_for_electrogrup():
+def test_search_anofm_for_company():
     if not _reachable("mediere.anofm.ro"):
         pytest.skip("mediere.anofm.ro not reachable")
     jobs = anaf.search_anofm(COMPANY_CIF)

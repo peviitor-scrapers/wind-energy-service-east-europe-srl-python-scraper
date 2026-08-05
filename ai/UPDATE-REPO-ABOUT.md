@@ -1,10 +1,37 @@
 # Update Repo About
 
-Keep the GitHub repository description up to date:
+Keep the GitHub repository metadata up to date.
 
-**Description:** Python scraper that publishes ELECTROGRUP SA jobs from
-applytojob to peviitor.ro via the v1 API.
+## Description
 
-**Website:** https://peviitor.ro
+Scraper automat pentru locurile de muncă WIND ENERGY SERVICE EAST EUROPE SRL (CIF: 26669972) — extrage
+de pe electrogrup.applytojob.com și publică pe peviitor.ro
 
-**Topics:** see `ai/TOPICS.md`.
+## Homepage
+
+https://peviitor-scrapers.github.io/wind-energy-service-east-europe-srl-python-scraper/
+
+## Topics (exactly 2, per TOPICS.md)
+
+- job-seeker-ro-spider
+- peviitor-ro
+
+## Workflow file
+
+`.github/workflows/job-seeker-ro-spider.yml`
+
+## How to apply
+
+```bash
+gh repo edit peviitor-scrapers/wind-energy-service-east-europe-srl-python-scraper \
+  --description "Scraper automat pentru locurile de muncă WIND ENERGY SERVICE EAST EUROPE SRL (CIF: 26669972) — extrage de pe electrogrup.applytojob.com și publică pe peviitor.ro" \
+  --homepage "https://peviitor-scrapers.github.io/wind-energy-service-east-europe-srl-python-scraper/"
+```
+
+## GitHub Pages
+
+- Source: branch `main`, path `/docs` (static site, no Pages workflow needed).
+- Builds automatically on every push to `main` (`build_type: legacy`).
+- Site: https://peviitor-scrapers.github.io/wind-energy-service-east-europe-srl-python-scraper/
+- `docs/jobs.md` is regenerated on each scrape and served on the site.
+- Homepage on the repo points to the Pages URL (same as the EPAM template).

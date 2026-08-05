@@ -2,8 +2,8 @@
 
 ## Reporting a Vulnerability
 
-Do **not** open a public issue. Report vulnerabilities privately by contacting
-the peviitor-scrapers maintainers via GitHub security advisories.
+Do **not** open a public issue. Report vulnerabilities privately via GitHub
+security advisories on this repository.
 
 We will acknowledge the report within 5 business days and work on a fix before
 disclosure.

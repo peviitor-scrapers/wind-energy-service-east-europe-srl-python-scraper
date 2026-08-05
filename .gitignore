@@ -20,3 +20,6 @@ scraper/anaf_cache.json
 .vscode/
 .idea/
 .DS_Store
+
+# Temporary files
+tmp/

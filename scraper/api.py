@@ -169,8 +169,13 @@ def check_url(url):
 # VERIFICATION WORKFLOW
 # ============================================================================
 
-def run_verification(cif):
-    """Checks existing jobs in SOLR, validates URLs, deletes invalid ones."""
+def run_verification(cif, delete=False, prefix=None):
+    """Checks existing jobs in SOLR and validates URLs.
+
+    Read-only by default. Deletion only happens when ``delete=True`` and
+    only for invalid URLs under ``prefix`` (e.g. our board URL prefix), so
+    jobs published by other scrapers under a shared CIF are never removed.
+    """
     print("=== Verify SOLR Jobs ===\n")
     result = query_solr(cif)
     print(f"Total jobs in SOLR for CIF {cif}: {result['numFound']}")
@@ -188,13 +193,27 @@ def run_verification(cif):
         if not res["valid"]:
             invalid_urls.append(job.get("url"))
 
-    if invalid_urls:
-        print(f"\n⚠️ {len(invalid_urls)} invalid URLs found - deleting via API...")
-        for url in invalid_urls:
-            delete_job_by_url(url)
-        print(f"✅ Deleted {len(invalid_urls)} invalid jobs via API")
-    else:
+    if not invalid_urls:
         print("\n✅ All URLs valid")
+        return
+
+    if not delete or not prefix:
+        print(f"\n⚠️ {len(invalid_urls)} invalid URL(s) — read-only, nothing deleted.")
+        print("Use --delete to remove invalid board URLs (scoped to the board prefix).")
+        return
+
+    deletable = [u for u in invalid_urls if u.startswith(prefix)]
+    skipped = [u for u in invalid_urls if not u.startswith(prefix)]
+    if skipped:
+        print(f"\n⚠️ Skipping {len(skipped)} invalid URL(s) from other sources (outside board prefix).")
+    if not deletable:
+        print("\n✅ No invalid board URLs to delete.")
+        return
+
+    print(f"\n⚠️ Deleting {len(deletable)} invalid board URL(s) via API...")
+    for url in deletable:
+        delete_job_by_url(url)
+    print(f"✅ Deleted {len(deletable)} invalid jobs via API")
 
 
 # ============================================================================
@@ -202,10 +221,17 @@ def run_verification(cif):
 # ============================================================================
 
 if __name__ == "__main__":
+    import argparse
     import sys
 
-    if len(sys.argv) > 1:
-        run_verification(sys.argv[1])
-    else:
-        print("Usage: python -m scraper.api <CIF>")
-        sys.exit(1)
+    from .config import scraper_config
+
+    parser = argparse.ArgumentParser(
+        description="Verify peviitor jobs for a CIF (read-only unless --delete)")
+    parser.add_argument("cif", help="Company CIF")
+    parser.add_argument("--delete", action="store_true",
+                        help="Delete invalid jobs under the board URL prefix")
+    args = parser.parse_args()
+
+    prefix = scraper_config.get("jobDetailsPrefix") or f"{scraper_config['apiBase']}/apply/jobs/details/"
+    run_verification(args.cif, delete=args.delete, prefix=prefix)

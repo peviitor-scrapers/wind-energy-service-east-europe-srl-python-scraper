@@ -4,7 +4,7 @@ Instructions for AI agents working in this repository.
 
 ## Project
 
-Python scraper that reads job listings from the ELECTROGRUP SA applytojob
+Python scraper that reads job listings from the WIND ENERGY SERVICE EAST EUROPE SRL applytojob
 board and publishes them to peviitor.ro through the **v1 API**
 (`https://api.peviitor.ro/v1`). It is a Python port of the Node.js EPAM
 template and must follow the same API contract.
@@ -18,6 +18,58 @@ template and must follow the same API contract.
 5. Run `python3 -m pytest tests/unit tests/consistency` before pushing.
 6. Do not add comments unless they explain *why*.
 7. Do not commit secrets, `jobs.json`, or the ANAF cache.
+8. **Every code change must have a corresponding GitHub issue** (see
+   [ISSUES.md](ISSUES.md)) — create the issue before implementing, and
+   reference it in the commit message (e.g. `fix: #12 ...`). Exceptions:
+   typos, whitespace, and minor documentation.
+
+## Temporary files
+
+All temporary/scratch files go in `tmp/` inside the project root — never
+outside the project. `tmp/` is gitignored.
+
+## Background tasks — always pass `--repo` to `gh`
+
+`gh` uses the current directory's git remote by default. When polling a
+workflow run (`gh run view ...`) from a different CWD, it returns 404 and
+the loop hangs forever. Always pass `--repo` explicitly:
+
+```bash
+gh run view <RUN_ID> --repo peviitor-scrapers/wind-energy-service-east-europe-srl-python-scraper --json status -q .status
+```
+
+If a background task is stuck, kill it immediately instead of letting it
+hang.
+
+## Commit & push
+
+- `git add -A && git commit -m "..." && git push`
+- Commit messages reference the issue they close (e.g. `fix: #12 ...`)
+- Never `--force` push
+
+## Do not modify template-derived files
+
+These shared modules are ported from the parent scraper template and must
+stay uniform across derived scrapers — do not edit them for company-specific
+reasons:
+
+- `scraper/api.py`
+- `scraper/anaf.py`
+- `scraper/company.py`
+- `scraper/job_validator.py`
+- `scraper/markdown_generator.py`
+- `scraper/validate_jobs.py`
+
+Company-specific logic belongs in `scraper/index.py` and
+`scraper/config/*.json`. If a template-wide bug is found in a shared
+module, file an issue and sync the fix back to the source template.
+
+## Maintenance
+
+On every session: check open GitHub issues
+(`gh issue list --repo peviitor-scrapers/wind-energy-service-east-europe-srl-python-scraper --state open`),
+prioritize `critical` → `bug` → `enhancement` → `documentation`, and fix
+them — commit with the issue reference and close the issue.
 
 ## Quick commands
 
@@ -25,7 +77,7 @@ template and must follow the same API contract.
 python3 -m pytest tests/unit tests/consistency   # fast tests (no network)
 python3 -m pytest tests/e2e                      # real board scrape
 python3 -m scraper.index                         # full scrape + publish
-python3 -m scraper.validate_jobs 9256208 --head  # validate job URLs
+python3 -m scraper.validate_jobs 26669972 --mode head  # validate job URLs
 ```
 
 ## Key files

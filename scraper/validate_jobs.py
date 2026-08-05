@@ -10,7 +10,10 @@ import sys
 
 from .api import delete_job_by_url, query_solr
 from .job_validator import validate_by_browser, validate_by_content, validate_by_head
-from .config import company_config
+from .config import company_config, scraper_config
+
+
+BOARD_PREFIX = scraper_config.get("jobDetailsPrefix") or f"{scraper_config['apiBase']}/apply/jobs/details/"
 
 
 def main():
@@ -49,7 +52,14 @@ def main():
         print("Dry run — nothing deleted.")
         return 0
     if args.delete:
-        for url in invalid:
+        deletable = [u for u in invalid if u.startswith(BOARD_PREFIX)]
+        skipped = [u for u in invalid if not u.startswith(BOARD_PREFIX)]
+        if skipped:
+            print(f"  ⚠️ Skipping {len(skipped)} invalid URL(s) from other sources (outside board prefix).")
+        if not deletable:
+            print("  ✅ No invalid board URLs to delete.")
+            return 0
+        for url in deletable:
             try:
                 delete_job_by_url(url)
                 print(f"  Deleted: {url}")

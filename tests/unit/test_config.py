@@ -12,8 +12,17 @@ def test_company_config_shape(company_config):
     assert isinstance(company_config["website"], list)
     assert isinstance(company_config["career"], list)
     assert company_config["career"][0]
-    assert "peviitor-scrapers" in company_config["scraperFile"]
+    owner = get_remote_owner()
+    assert owner in company_config["scraperFile"]
     assert "job-seeker-ro-spider.yml" in company_config["scraperFile"]
+
+
+def get_remote_owner():
+    import subprocess
+    out = subprocess.check_output(["git", "remote", "get-url", "origin"], text=True)
+    owner = out.strip().split("/")[-2]
+    assert owner
+    return owner
 
 
 def test_company_config_id_is_numeric(company_config):

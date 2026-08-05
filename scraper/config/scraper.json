@@ -1,5 +1,6 @@
 {
   "apiBase": "https://electrogrup.applytojob.com",
   "apiPath": "/apply/jobs",
-  "department": "WESEE"
+  "department": "WESEE",
+  "jobDetailsPrefix": "https://electrogrup.applytojob.com/apply/jobs/details/"
 }

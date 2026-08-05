@@ -3,10 +3,45 @@
 ## Getting started
 
 ```bash
-git clone git@github.com:peviitor-scrapers/electrogrup-sa-python-scraper.git
-cd electrogrup-sa-python-scraper
+git clone git@github.com:peviitor-scrapers/wind-energy-service-east-europe-srl-python-scraper.git
+cd wind-energy-service-east-europe-srl-python-scraper
 python3 -m venv .venv && source .venv/bin/activate
 python3 -m pip install -r requirements.txt
+```
+
+## Reporting issues
+
+Every code change must have a corresponding GitHub issue — see
+[`ai/ISSUES.md`](ai/ISSUES.md). Open issues at
+[peviitor-scrapers/wind-energy-service-east-europe-srl-python-scraper/issues](https://github.com/peviitor-scrapers/wind-energy-service-east-europe-srl-python-scraper/issues).
+
+### Bug report structure
+
+Bug reports must follow this structure:
+
+- **ENVIRONMENT** — OS, Python version, and the command / configuration used.
+- **STEPS TO REPRODUCE** — numbered steps that trigger the bug.
+- **EXPECTED RESULTS** — what should happen.
+- **ACTUAL RESULTS** — what actually happens (include error messages and logs).
+
+Use this template:
+
+```markdown
+### ENVIRONMENT
+- OS: ...
+- Python: ...
+- Command / config: ...
+
+### STEPS TO REPRODUCE
+1. ...
+2. ...
+3. ...
+
+### EXPECTED RESULTS
+...
+
+### ACTUAL RESULTS
+...
 ```
 
 ## Code style

@@ -12,6 +12,22 @@ import requests
 HEADERS = {"User-Agent": "job_seeker_ro_spider"}
 TIMEOUT = 10
 
+_DISABLED_TAG_RE = re.compile(r"<(script|style)\b[^>]*>.*?</\1>", re.S | re.I)
+_HTML_TAG_RE = re.compile(r"<[^>]+>")
+
+
+def _visible_text(html):
+    """Lowercased visible text, with script/style blocks and tags stripped.
+
+    Boards bundle JS that contains words like "removed"/"expired" (e.g.
+    applytojob's "xhr-load-removed"); matching against raw HTML would flag
+    active jobs as expired.
+    """
+    text = _DISABLED_TAG_RE.sub(" ", html or "")
+    text = _HTML_TAG_RE.sub(" ", text)
+    return text.lower()
+
+
 DEFAULT_EXPIRED_KEYWORDS = [
     "not found",
     "no longer accepting",
@@ -51,7 +67,7 @@ def validate_by_content(url, keywords=None, timeout=TIMEOUT):
         res = requests.get(url, headers=HEADERS, timeout=timeout, allow_redirects=False)
         if res.status_code != 200:
             return {"url": url, "status": "expired", "http_status": res.status_code}
-        body = (res.text or "").lower()
+        body = _visible_text(res.text)
         for kw in keywords:
             if kw.lower() in body:
                 return {"url": url, "status": "expired", "http_status": res.status_code}
@@ -75,7 +91,7 @@ def validate_by_browser(url, timeout=30000):
             page = browser.new_page()
             response = page.goto(url, wait_until="domcontentloaded", timeout=timeout)
             final_url = page.url
-            body = page.content().lower()
+            body = _visible_text(page.content())
             browser.close()
         if response and response.status != 200:
             return {"url": url, "status": "expired", "http_status": response.status}

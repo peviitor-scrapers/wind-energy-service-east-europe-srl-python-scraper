@@ -1,5 +1,22 @@
 # MAINTENANCE
 
+## Issue-driven maintenance
+
+Before any work, check open issues and fix them:
+
+```bash
+gh issue list --repo peviitor-scrapers/wind-energy-service-east-europe-srl-python-scraper --state open
+```
+
+Prioritize `critical` → `bug` → `enhancement` → `documentation`. For each
+open issue: read it, investigate the root cause, apply the fix, run the
+relevant tests, commit with the issue reference (e.g. `fix: resolve #20`),
+push, then close the issue with a comment linking the commit.
+
+If an issue cannot be resolved (external API down, board unreachable), add
+a comment explaining the blocker, label it `wontfix`/`question` as
+appropriate, and move on.
+
 ## Routine
 
 - The scheduled `job-seeker-ro-spider.yml` workflow scrapes daily.
@@ -7,8 +24,8 @@
 - Validate job URLs periodically:
 
 ```bash
-python3 -m scraper.validate_jobs 9256208 --mode content --dry-run
-python3 -m scraper.validate_jobs 9256208 --mode content --delete
+python3 -m scraper.validate_jobs 26669972 --mode content --dry-run
+python3 -m scraper.validate_jobs 26669972 --mode content --delete
 ```
 
 ## Board structure changes
@@ -16,7 +33,7 @@ python3 -m scraper.validate_jobs 9256208 --mode content --delete
 If `parse_api_jobs` returns 0 or few jobs, inspect the applytojob page:
 
 ```bash
-curl -s "https://electrogrup.applytojob.com/apply/jobs/?department=ELECTROGRUP"
+curl -s "https://electrogrup.applytojob.com/apply/jobs/?department=WESEE"
 ```
 
 Update the parser selectors in `scraper/index.py` (`a.job_title_link`,

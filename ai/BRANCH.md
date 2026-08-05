@@ -1,6 +1,30 @@
-# Branching
+# BRANCH.md — Default Branch Must Be `main`
 
-- `main` is the only long-lived branch.
-- All work happens on short-lived branches or directly via GitHub Actions.
-- The repository is driven by scheduled workflows; do not open long-running
-  feature branches.
+All scrapers derived from the template **MUST** use `main` as the default branch.
+
+## De ce `main`?
+
+- `master` este o denumire veche (legacy); GitHub recomandă `main` din 2020
+- Toate repo-urile noi pe GitHub au `main` ca default
+- Consistență între toate scraper-ele
+
+## Reguli
+
+1. Default branch **MUST** fie `main` — NU `master`, `develop`, sau altceva.
+2. Orice branch `master` existent trebuie redenumit în `main`.
+3. Verificare: `gh repo view peviitor-scrapers/wind-energy-service-east-europe-srl-python-scraper --json defaultBranch`
+4. Doar `main` este long-lived; munca se face pe branch-uri scurte sau direct
+   prin GitHub Actions (repo-ul e condus de workflows programate).
+
+## Cum redenumești
+
+```bash
+# Creează branch-ul main pe același commit ca master
+gh api repos/peviitor-scrapers/wind-energy-service-east-europe-srl-python-scraper/git/refs -f ref="refs/heads/main" -f sha=$(gh api repos/peviitor-scrapers/wind-energy-service-east-europe-srl-python-scraper/git/refs/heads/master --jq '.object.sha')
+
+# Schimbă default branch
+gh api repos/peviitor-scrapers/wind-energy-service-east-europe-srl-python-scraper -X PATCH -f default_branch="main"
+
+# Șterge branch-ul master
+gh api repos/peviitor-scrapers/wind-energy-service-east-europe-srl-python-scraper/git/refs/heads/master -X DELETE
+```

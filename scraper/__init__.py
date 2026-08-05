@@ -1,1 +1,1 @@
-"""Electrogrup Python scraper package."""
+"""WIND ENERGY SERVICE EAST EUROPE Python scraper package."""

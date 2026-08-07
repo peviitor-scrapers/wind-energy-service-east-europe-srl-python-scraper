@@ -8,11 +8,11 @@
 | Brand | WESEE |
 | Website | http://wesee.ro/ |
 | Career | https://e-infra.ro/careers/ |
-| LastScraped | 2026-08-06 |
+| LastScraped | 2026-08-07 |
 
 ## Jobs (0)
 
 _No jobs found._
 
 ---
-_Generated at 2026-08-06T08:11:54Z_
+_Generated at 2026-08-07T06:57:34Z_

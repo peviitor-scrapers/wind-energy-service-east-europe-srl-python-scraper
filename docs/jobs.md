@@ -8,11 +8,15 @@
 | Brand | WESEE |
 | Website | http://wesee.ro/ |
 | Career | https://e-infra.ro/careers/ |
-| LastScraped | 2026-08-21 |
+| LastScraped | 2026-08-22 |
 
-## Jobs (0)
+## Jobs (1)
 
-_No jobs found._
+### Project Manager
+
+- **URL**: [https://electrogrup.applytojob.com/apply/jobs/details/aAg7aEQlDL](https://electrogrup.applytojob.com/apply/jobs/details/aAg7aEQlDL)
+- **Location**: Constanta
+- **Status**: scraped
 
 ---
-_Generated at 2026-08-21T06:24:39Z_
+_Generated at 2026-08-22T06:18:55Z_

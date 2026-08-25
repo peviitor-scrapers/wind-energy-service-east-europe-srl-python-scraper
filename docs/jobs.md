@@ -8,7 +8,7 @@
 | Brand | WESEE |
 | Website | http://wesee.ro/ |
 | Career | https://e-infra.ro/careers/ |
-| LastScraped | 2026-08-24 |
+| LastScraped | 2026-08-25 |
 
 ## Jobs (1)
 
@@ -19,4 +19,4 @@
 - **Status**: scraped
 
 ---
-_Generated at 2026-08-24T06:33:01Z_
+_Generated at 2026-08-25T06:23:53Z_

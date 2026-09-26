@@ -8,9 +8,9 @@
 | Brand | WESEE |
 | Website | http://wesee.ro/ |
 | Career | https://e-infra.ro/careers/ |
-| LastScraped | 2026-09-25 |
+| LastScraped | 2026-09-26 |
 
-## Jobs (1)
+## Jobs (2)
 
 ### Project Manager
 
@@ -18,5 +18,11 @@
 - **Location**: Constanta
 - **Status**: scraped
 
+### Tehnician Eolian
+
+- **URL**: [https://electrogrup.applytojob.com/apply/jobs/details/6R6qlE96bz](https://electrogrup.applytojob.com/apply/jobs/details/6R6qlE96bz)
+- **Location**: Constanta
+- **Status**: scraped
+
 ---
-_Generated at 2026-09-25T10:42:52Z_
+_Generated at 2026-09-26T10:25:41Z_

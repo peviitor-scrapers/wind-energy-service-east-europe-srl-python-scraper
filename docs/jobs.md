@@ -8,13 +8,13 @@
 | Brand | WESEE |
 | Website | http://wesee.ro/ |
 | Career | https://e-infra.ro/careers/ |
-| LastScraped | 2026-10-23 |
+| LastScraped | 2026-10-24 |
 
 ## Jobs (2)
 
 ### Project Manager
 
-- **URL**: [https://electrogrup.applytojob.com/apply/jobs/details/aAg7aEQlDL](https://electrogrup.applytojob.com/apply/jobs/details/aAg7aEQlDL)
+- **URL**: [https://electrogrup.applytojob.com/apply/jobs/details/zldsXcWsRm](https://electrogrup.applytojob.com/apply/jobs/details/zldsXcWsRm)
 - **Location**: Constanta
 - **Status**: scraped
 
@@ -25,4 +25,4 @@
 - **Status**: scraped
 
 ---
-_Generated at 2026-10-23T10:37:33Z_
+_Generated at 2026-10-24T09:55:40Z_
